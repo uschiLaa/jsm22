@@ -202,11 +202,44 @@ Recent work has focused on two questions:
 - Leverage javascript interfaces, shiny apps, etc. to build an **interactive display**, e.g. for replaying or exporting projections, or for linked brushing
 
 ---
+# Sage tour
+
+When we project linearly from a high-dimensional space points start to **pile up** near the center of the projection, obscuring features or separation between groups. We can understand this as a large part of the high-D volume being projected onto a small area.
+
+The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+
+<center>
+<img src="plots/sage-density-1.png" width="75%">
+</center>
+
+<center>
+.footnote[[Laa, Cook, Lee (2022) Burning sage: Reversing the curse of dimensionality](https://doi.org/10.1080/10618600.2021.1963264)]
+</center>
+
+
+---
+# Clustering and sage display
+
+<img src="plots/mouse_grand_2c.gif" width="450"/> <img src="plots/mouse_sage_2c_gam3.gif" width="450"/> 
+
+
+---
+# Liminal
+
+With high-dimensional data a common approach is to use non-linear dimension reduction like t-SNE, also here we can leverage the tour in a linked display:
+
+<iframe title="Animation linking the tSNE plot with a tour plot, of data with 6 clusters, 2 really large, 3 very small and close together, and 1 close to the three but slightly bigger. tSNE spreads them into 6 clusters, three big and three small roughly equidistant." src="https://player.vimeo.com/video/439635905" width="80%" height="400" frameborder="0" allowfullscreen></iframe>
+
+.footnote[[Lee, Cook, Laa (2022) Casting Multiple Shadows JDSSV](https://doi.org/10.52933/jdssv.v2i3)]
+
+---
 # The slice tour display
 
-For each projection we also use information from the orthogonal space to highlight points close to the centered projection plane. This allows us to see local structures and reveal concave features (e.g. hollowness).
+Even when projecting from relatively low number of dimensions we can still have overplotting issues if there are a lot of observations. When we have a lot of data there might be hidden features inside the distribution that are hidden in projections but visible when "slicing" through the distribution.
 
 .center[<img src="plots/slice.png" width="60%">]
+
+.footnote[[Laa, Cook, Valencia (2020) A slice tour for finding hollowness in high-dimensional data](https://doi.org/10.1080/10618600.2020.1777140)]
 
 ---
 # Slice tour of geometric shapes
@@ -235,29 +268,26 @@ We can combine the slice display with a grand tour to gain intuition about a sur
     </div>
 ]
 
----
-# Sage tour
-
-The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
-
-Without any transformation the radial distribution of the volume and projected volume of a hypersphere are very different.
-
+The slice tour is especially useful when looking at classification models using tools from the `classifly` package, and it also inspired work on "section pursuit".
 
 ---
-# Sage tour
+# Manual tour in mathematica
 
-The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+With the slice tour understanding what we are looking at is becoming more difficult: we have to understand the projection the slice is based on, but also the center point that is anchoring where the slice is passing through the distribution. Here having **manual control** of both aspects is especially useful.
 
-We correct for this difference via the radial transformation.
-
-
-
+Ongoing work (with Alex Auman, Di Cook, German Valencia): we can implement such an interactive manual slice tour with tools available in mathematica, which has also motivated a new approach to manual tours.
 
 
 ---
-# Clustering and sage display
+# Interactivity
 
-<img src="plots/mouse_grand_2c.gif" width="450"/> <img src="plots/mouse_sage_2c_gam3.gif" width="450"/> 
+The `liminal` implementation shows what is possible already with current tools in R, and there are a lot of interesting developments that build on interfaces to Javascript for better interactive displays:
+
+Hart and Wang (2022) [detourr:](https://cran.biotools.fr/web/packages/detourr/index.html) Animations for {tourr} using htmlwidgets for performance and portability. <br>
+
+Harrison (2022) [Langevin dynamics based tours](https://logarithmic.net/langevitour/) of data, in Javascript with R wrapper. <br>
+
+However there is no canonical approach that makes this *easy* for new users.
 
 ---
 # Summary
