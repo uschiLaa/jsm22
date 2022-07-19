@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>New displays and applications for tour methods</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ursula Laa" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/kunoichi.css" rel="stylesheet" />
+    <link href="libs/remark-css/ninjutsu.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+layout: false
+class: split-75
+background-image: url("plots/title_slide_bkg.png")
+background-position: center
+background-size: contain
+
+&lt;style type="text/css"&gt;
+.remark-slide-content{
+font-size: 30px;
+
+}
+code.r{
+  font-size: 24px;
+}
+
+&lt;/style&gt;
+
+
+
+
+&lt;style type="text/css"&gt;
+/* custom.css */
+:root{
+  --main-color1: #509e2f;
+  --main-color2: #bcbddc;
+  --main-color3: #efedf5;
+  --main-color4: #9DDAE5;
+  --text-color3: black;
+  --text-color4: #505050;
+  --code-inline-color: #4e5054;
+  --link-color: #006CAB;
+}
+.large { font-size: 150% }
+.largeish { font-size: 120% }
+.summarystyle { font-size: 150%;
+  line-height:150%;}
+.my-gray {color: #606060!important; }
+.tiny{ font-size: 25%}
+&lt;/style&gt;
+
+
+.column[.content[
+
+&lt;br&gt;
+
+## ** Tours for the dynamic visualization of high-dimensional data**
+
+.my-gray[
+.large[**Ursula Laa**]
+
+.largeish[ Institute of Statistics &lt;br&gt;
+University of Natural Resources and Life Sciences
+]
+]
+
+JSM 2022, Washington DC
+
+]]
+
+.column[.top_abs.content[
+&lt;img src="plots/Boku-wien.png" width="60%"&gt;
+]]
+
+---
+# The grand tour and hypercubes
+
+With the grand tour we are using linear projections to visualize data in more than 3D - a nice way of visualizing the tour is to show it for hypercubes (generated with `geozoo`)
+
+&lt;br&gt;
+
+.center[
+&lt;div &gt;
+    &lt;div style="width: 33%; float: left"&gt;
+        &lt;b&gt; 3D &lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/c3.gif" width = "90%"/&gt;
+        &lt;/a&gt;
+    &lt;/div&gt;
+        &lt;div style="width: 33%; float: left"&gt;
+       &lt;b&gt;4D&lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/c4.gif" width = "90%" /&gt;        &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div style="width: 33%; float: left"&gt;
+        &lt;b&gt;6D&lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/c6.gif" width = "90%"/&gt;        &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+]
+
+---
+class: split-40
+
+.column.content[
+
+&lt;br&gt;
+
+# Implementation in R
+
+&lt;br&gt;
+
+
+```r
+library(tourr)
+library(palmerpenguins)
+
+penguins &lt;- na.omit(penguins)
+animate_xy(penguins[,3:6], 
+           col=penguins$species, 
+           axes="bottomleft", 
+           fps=15)
+```
+
+
+
+
+]
+
+.column.content[
+&lt;img src="plots/penguins2d.gif" width = "90%"/&gt;
+]
+
+---
+# Short overview
+
+Short history:
+
+- First proposed in [Asimov (1985)](https://doi.org/10.1137/0906011)
+- Lot of new developments in the 1990's, e.g. the guided tour [Cook et al (1995)](https://www.jstor.org/stable/1390844))
+- R implementation in 2011 in the `tourr` package [Wickham et al (2011)](https://www.jstatsoft.org/article/view/v040i02)
+
+Common usage:
+
+- explore the shape of a multivariate distribution
+- understand class differences and which variables are important
+- identify (multivariate) outliers
+- visualize statistical models, as described in [Wickham et al (2015)](https://doi.org/10.1002/sam.11271)
+
+These and more recent developments were summarized in a recent review: [Lee et al (2021)](https://doi.org/10.1002/wics.1573)
+
+---
+# What is new?
+
+Recent work has focused on two questions:
+
+### How can we use tours in the case of **large data**
+
+- Large number of **observations**: overplotting can hide features, especially in the case of concave distributions.
+- Large number of **variables**: projected data points tend to fall close to the center (crowding problem)
+
+### Can we make tour displays interactive to learn more?
+
+- Having **manual controls** of the projection allows the viewer to understand which variables are important, e.g. for separating groups.
+- Leverage javascript interfaces, shiny apps, etc. to build an **interactive display**, e.g. for replaying or exporting projections, or for linked brushing
+
+---
+# The slice tour display
+
+For each projection we also use information from the orthogonal space to highlight points close to the centered projection plane. This allows us to see local structures and reveal concave features (e.g. hollowness).
+
+.center[&lt;img src="plots/slice.png" width="60%"&gt;]
+
+---
+# Slice tour of geometric shapes
+
+We can combine the slice display with a grand tour to gain intuition about a surface.
+
+
+.center[
+&lt;div &gt;
+    &lt;div style="width: 33%; float: left"&gt;
+        &lt;b&gt; 3D sphere &lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/sphere-3-anchored.gif" width = "90%"/&gt;
+        &lt;/a&gt;
+    &lt;/div&gt;
+        &lt;div style="width: 33%; float: left"&gt;
+       &lt;b&gt;4D torus&lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/torus-4-centered.gif" width = "90%" /&gt;        &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div style="width: 33%; float: left"&gt;
+        &lt;b&gt;Roman surface&lt;/b&gt;
+        &lt;a href=""&gt;
+&lt;img src="plots/roman-surface.gif" width = "90%"/&gt;        &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+]
+
+---
+# Sage tour
+
+The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+
+Without any transformation the radial distribution of the volume and projected volume of a hypersphere are very different.
+
+
+---
+# Sage tour
+
+The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+
+We correct for this difference via the radial transformation.
+
+
+
+
+
+---
+# Clustering and sage display
+
+&lt;img src="plots/mouse_grand_2c.gif" width="450"/&gt; &lt;img src="plots/mouse_sage_2c_gam3.gif" width="450"/&gt; 
+
+---
+# Summary
+
+- Tour methods can visualize high-dimensional data and reveal multivariate structure and outliers, and help us understand grouping
+- The `tourr` package includes different methods for basis selection, an algorithm for geodesic interpolation and many display functions
+- Since we rely on linear projections, tour displays are straightforward to interpret
+- Tours can be used as a complementary method together with non-linear dimension reduction
+- These methods can benefit from interactive interfaces, some recent efforts are available in `R` packages: `liminal`, `spinifex` 
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="libs/jquery/jquery.min.js"></script>
+<script src="libs/slides.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"ratio": "16:9",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

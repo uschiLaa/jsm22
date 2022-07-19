@@ -1,0 +1,270 @@
+---
+title: "New displays and applications for tour methods"
+subtitle: "JSM 2022"
+author: "Ursula Laa"
+output:
+  xaringan::moon_reader:
+    css: 
+      - "kunoichi"
+      - "ninjutsu"
+      - "assets/monash-fonts.css"
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      ratio: '16:9'
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: ["libs/jquery/jquery.min.js", "libs/slides.js"]
+      slideNumberFormat: "%current%" 
+---
+layout: false
+class: split-75
+background-image: url("plots/title_slide_bkg.png")
+background-position: center
+background-size: contain
+
+<style type="text/css">
+.remark-slide-content{
+font-size: 30px;
+
+}
+code.r{
+  font-size: 24px;
+}
+
+</style>
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, width = 120)
+library(tidyverse)
+library(knitr)
+library(tourr)
+library(kableExtra)
+library(htmltools)
+opts_chunk$set(
+  echo = TRUE, warning = FALSE, message = FALSE, comment = "#>",
+  fig.path = 'figure/', cache.path = 'cache/', fig.align = 'center',
+  fig.width = 12, fig.height = 4, fig.show = 'hold',
+  cache = FALSE, external = TRUE, dev = 'png', dev.args = list(bg = "transparent")
+)
+mp4_vid <- function(src, width){
+  HTML(
+    paste0(
+      '<video width="', width, '" loop autoplay>
+        <source src="', src, '" type="video/mp4">
+      </video>'
+    )
+  )
+}
+```
+
+
+```{css, echo=FALSE}
+/* custom.css */
+:root{
+  --main-color1: #509e2f;
+  --main-color2: #bcbddc;
+  --main-color3: #efedf5;
+  --main-color4: #9DDAE5;
+  --text-color3: black;
+  --text-color4: #505050;
+  --code-inline-color: #4e5054;
+  --link-color: #006CAB;
+}
+.large { font-size: 150% }
+.largeish { font-size: 120% }
+.summarystyle { font-size: 150%;
+  line-height:150%;}
+.my-gray {color: #606060!important; }
+.tiny{ font-size: 25%}
+```
+
+
+.column[.content[
+
+<br>
+
+## ** Tours for the dynamic visualization of high-dimensional data**
+
+.my-gray[
+.large[**Ursula Laa**]
+
+.largeish[ Institute of Statistics <br>
+University of Natural Resources and Life Sciences
+]
+]
+
+JSM 2022, Washington DC
+
+]]
+
+.column[.top_abs.content[
+<img src="plots/Boku-wien.png" width="60%">
+]]
+
+---
+# The grand tour and hypercubes
+
+With the grand tour we are using linear projections to visualize data in more than 3D - a nice way of visualizing the tour is to show it for hypercubes (generated with `geozoo`)
+
+<br>
+
+.center[
+<div >
+    <div style="width: 33%; float: left">
+        <b> 3D </b>
+        <a href="">
+<img src="plots/c3.gif" width = "90%"/>
+        </a>
+    </div>
+        <div style="width: 33%; float: left">
+       <b>4D</b>
+        <a href="">
+<img src="plots/c4.gif" width = "90%" />        </a>
+    </div>
+    <div style="width: 33%; float: left">
+        <b>6D</b>
+        <a href="">
+<img src="plots/c6.gif" width = "90%"/>        </a>
+    </div>
+    </div>
+]
+
+---
+class: split-40
+
+.column.content[
+
+<br>
+
+# Implementation in R
+
+<br>
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
+library(tourr)
+library(palmerpenguins)
+
+penguins <- na.omit(penguins)
+animate_xy(penguins[,3:6], 
+           col=penguins$species, 
+           axes="bottomleft", 
+           fps=15)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, eval=FALSE}
+set.seed(2021)
+render_gif(penguins[,3:6], grand_tour(), 
+           display_xy(col=penguins$species, axes="bottomleft"), 
+           "plots/penguins2d.gif", frames=100, width=300, height=300)
+
+```
+
+]
+
+.column.content[
+<img src="plots/penguins2d.gif" width = "90%"/>
+]
+
+---
+# Short overview
+
+Short history:
+
+- First proposed in [Asimov (1985)](https://doi.org/10.1137/0906011)
+- Lot of new developments in the 1990's, e.g. the guided tour [Cook et al (1995)](https://www.jstor.org/stable/1390844))
+- R implementation in 2011 in the `tourr` package [Wickham et al (2011)](https://www.jstatsoft.org/article/view/v040i02)
+
+Common usage:
+
+- explore the shape of a multivariate distribution
+- understand class differences and which variables are important
+- identify (multivariate) outliers
+- visualize statistical models, as described in [Wickham et al (2015)](https://doi.org/10.1002/sam.11271)
+
+These and more recent developments were summarized in a recent review: [Lee et al (2021)](https://doi.org/10.1002/wics.1573)
+
+---
+# What is new?
+
+Recent work has focused on two questions:
+
+### How can we use tours in the case of **large data**?
+
+- Large number of **observations**: overplotting can hide features, especially in the case of concave distributions.
+- Large number of **variables**: projected data points tend to fall close to the center (crowding problem)
+
+### Can we make tour displays interactive to learn more?
+
+- Having **manual controls** of the projection allows the viewer to understand which variables are important, e.g. for separating groups.
+- Leverage javascript interfaces, shiny apps, etc. to build an **interactive display**, e.g. for replaying or exporting projections, or for linked brushing
+
+---
+# The slice tour display
+
+For each projection we also use information from the orthogonal space to highlight points close to the centered projection plane. This allows us to see local structures and reveal concave features (e.g. hollowness).
+
+.center[<img src="plots/slice.png" width="60%">]
+
+---
+# Slice tour of geometric shapes
+
+We can combine the slice display with a grand tour to gain intuition about a surface.
+
+
+.center[
+<div >
+    <div style="width: 33%; float: left">
+        <b> 3D sphere </b>
+        <a href="">
+<img src="plots/sphere-3-anchored.gif" width = "90%"/>
+        </a>
+    </div>
+        <div style="width: 33%; float: left">
+       <b>4D torus</b>
+        <a href="">
+<img src="plots/torus-4-centered.gif" width = "90%" />        </a>
+    </div>
+    <div style="width: 33%; float: left">
+        <b>Roman surface</b>
+        <a href="">
+<img src="plots/roman-surface.gif" width = "90%"/>        </a>
+    </div>
+    </div>
+]
+
+---
+# Sage tour
+
+The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+
+Without any transformation the radial distribution of the volume and projected volume of a hypersphere are very different.
+
+
+---
+# Sage tour
+
+The sage display transforms the **radius** (i.e. the distance from the center) of all projected data points such that equal volume in the high-dimensional space gets projected onto equal area in the two-dimensional plane.
+
+We correct for this difference via the radial transformation.
+
+
+
+
+
+---
+# Clustering and sage display
+
+<img src="plots/mouse_grand_2c.gif" width="450"/> <img src="plots/mouse_sage_2c_gam3.gif" width="450"/> 
+
+---
+# Summary
+
+- Tour methods can visualize high-dimensional data and reveal multivariate structure and outliers, and help us understand grouping
+- The `tourr` package includes different methods for basis selection, an algorithm for geodesic interpolation and many display functions
+- Since we rely on linear projections, tour displays are straightforward to interpret
+- Tours can be used as a complementary method together with non-linear dimension reduction
+- These methods can benefit from interactive interfaces, some recent efforts are available in `R` packages: `liminal`, `spinifex` 
+
