@@ -27,6 +27,9 @@ code.r{
   font-size: 24px;
 }
 
+    ul li { margin-bottom: 15px; }
+
+
 &lt;/style&gt;
 
 
@@ -249,23 +252,25 @@ Ongoing work (with Alex Auman, Di Cook, German Valencia): interactive manual sli
 ---
 # Interactivity
 
-The `liminal` implementation shows what is possible already with current tools in R, and there are a lot of interesting developments that build on interfaces to Javascript for better interactive displays:
-
 Hart and Wang (2022) [detourr:](https://cran.biotools.fr/web/packages/detourr/index.html) Animations for {tourr} using htmlwidgets for performance and portability. &lt;br&gt;
 
 Harrison (2022) [Langevin dynamics based tours](https://logarithmic.net/langevitour/) of data, in Javascript with R wrapper. &lt;br&gt;
 
-However there is no canonical approach that makes this *easy* for new users.
+&lt;center&gt;
+&lt;iframe src="detourr.html" width="500" height="350" scrolling="yes" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+&lt;/center&gt;
+
 
 ---
 # Summary
+.largeish[
 
 - Tour methods can visualize high-dimensional data and reveal multivariate structure and outliers, and help us understand grouping
 - The `tourr` package includes different methods for basis selection, an algorithm for geodesic interpolation and many display functions
-- Since we rely on linear projections, tour displays are straightforward to interpret
+- Visualization of modern (big) data is a challenge and recent work is already providing interesting solutions
 - Tours can be used as a complementary method together with non-linear dimension reduction
-- These methods can benefit from interactive interfaces, some recent efforts are available in `R` packages: `liminal`, `spinifex` 
-
+- Interactive interfaces help with exploration and especially with interpretation, this was challenging within R but interfaces (in particular with Javascript) help - more to come soon!
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
